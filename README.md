@@ -81,7 +81,7 @@ Every bet is rejected if, after it, the worst-case payout of the active round wo
    a response for 24 h could therefore turn a losing round into a refund. Accepted by design.
 2. **Owner trust.** Owner can pause betting, change the safety buffer (no upper bound) and manage
    keepers, but cannot withdraw reserved or owed funds, cannot change the VRF coordinator and cannot
-   set the result. The mainnet owner is planned to be a multisig.
+   set the result.
 3. **Immutable coordinator.** A Chainlink coordinator migration requires deploying a new contract.
 4. **Token assumptions.** Standard ERC-20 only; fee-on-transfer is detected and rejected; rebasing
    tokens are unsupported. If a player cannot receive tokens (e.g. blocklisted), `refundBatch`
