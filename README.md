@@ -43,8 +43,32 @@ are ours; everything else is unmodified OpenZeppelin / Chainlink library code.
 Building this repository reproduces the deployed runtime bytecode exactly (16,204 bytes, identical
 including the metadata hash, with immutables masked).
 
-Mainnet target: BNB Smart Chain, wager token **USDT (BEP-20, 18 decimals)**. The testnet deployment
-uses a test token.
+The testnet deployment uses a test token as the wager token.
+
+## Mainnet deployment parameters
+
+The audited code is token-agnostic: the wager token and all VRF settings are constructor
+arguments, so the mainnet contract is this exact code deployed with the values below. No code
+change is made between audit and mainnet deployment.
+
+Constructor order: `wagerTokenAddress, vrfCoordinator, keyHash, subscriptionId, callbackGasLimit,
+requestConfirmations, timeout, nativePayment, initialSafetyBuffer, initialKeeper`
+
+| Parameter | Mainnet (BNB Smart Chain, chainId 56) | Testnet deployment (reference) |
+|---|---|---|
+| `wagerTokenAddress` | **USDT** `0x55d398326f99059fF775485246999027B3197955` (18 decimals → `minimumBet` = 1 USDT) | Test token, 18 decimals |
+| `vrfCoordinator` | `0xd691f04bc0C9a24Edb78af9E005Cf85768F694C9` (Chainlink VRF v2.5, official) | `0xDA3b641D438362C440Ac5458c57e00a712b66700` |
+| `keyHash` | One of the official BSC mainnet lanes — 200 gwei `0x130dba50ad435d4ecc214aad0d5820474137bd68e7e77724144f27c3c377d3d4`, 500 gwei `0xeb0f72532fed5c94b4caf7b49caf454b35a729608a441101b9269efb7efe2c6c`, 1000 gwei `0xb94a4fdb12830e15846df59b27d7c5d92c9c24c10cf6ae49655681ba560848dd`; lane TBD at deployment | 50 gwei lane |
+| `subscriptionId` | New mainnet subscription, TBD at deployment | — |
+| `callbackGasLimit` | TBD at deployment (Chainlink max 2,500,000) | 500,000 |
+| `requestConfirmations` | TBD at deployment (Chainlink range 3–200) | 3 |
+| `timeout` (`vrfTimeout`) | TBD at deployment | 3,600 s |
+| `nativePayment` | TBD at deployment | `true` (BNB) |
+| `initialSafetyBuffer` | TBD at deployment | 0 |
+| `initialKeeper` | TBD at deployment (contract enforces ≠ deployer, ≠ zero address) | — |
+
+Fixed in code regardless of parameters: betting window 45 s, final VRF deadline 24 h
+(`VRF_FINAL_TIMEOUT`), ≤50 claims/refunds per transaction.
 
 ## Roles
 
